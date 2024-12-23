@@ -248,6 +248,11 @@ LWECiphertext BinFHEContext::SwitchCTtoqn(ConstLWESwitchingKey& ksk, ConstLWECip
 
 void BinFHEContext::Decrypt(ConstLWEPrivateKey& sk, ConstLWECiphertext& ct, LWEPlaintext* result,
                             LWEPlaintextModulus p) const {
+    if (sk == nullptr || ct == nullptr || result == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return;
+    }                                
     m_LWEscheme->Decrypt(m_params->GetLWEParams(), sk, ct, result, p);
 }
 
@@ -256,6 +261,11 @@ LWESwitchingKey BinFHEContext::KeySwitchGen(ConstLWEPrivateKey& sk, ConstLWEPriv
 }
 
 void BinFHEContext::BTKeyGen(ConstLWEPrivateKey& sk, KEYGEN_MODE keygenMode) {
+    if (sk == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return;
+    }
     auto&& RGSWParams = m_params->GetRingGSWParams();
 
     auto temp = RGSWParams->GetBaseG();
@@ -309,6 +319,11 @@ LWECiphertext BinFHEContext::EvalFloor(ConstLWECiphertext& ct, uint32_t roundbit
     //    }
     //    SetQ(q);
     //    return res;
+    if (ct == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return nullptr;
+    }
     return m_binfhescheme->EvalFloor(m_params, m_BTKey, ct, GetBeta(), roundbits);
 }
 
@@ -318,6 +333,11 @@ LWECiphertext BinFHEContext::EvalSign(ConstLWECiphertext& ct, bool schemeSwitch)
 }
 
 std::vector<LWECiphertext> BinFHEContext::EvalDecomp(ConstLWECiphertext& ct) {
+    if (ct == nullptr)
+    {     
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return {};
+    }
     return m_binfhescheme->EvalDecomp(m_params, m_BTKey_map, ct, GetBeta());
 }
 

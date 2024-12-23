@@ -38,6 +38,11 @@ namespace lbcrypto {
 // wrapper for KeyGen methods
 RingGSWBTKey BinFHEScheme::KeyGen(const std::shared_ptr<BinFHECryptoParams>& params, ConstLWEPrivateKey& LWEsk,
                                   KEYGEN_MODE keygenMode = SYM_ENCRYPT) const {
+    if (LWEsk == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return nullptr;
+    }
     const auto& LWEParams = params->GetLWEParams();
 
     RingGSWBTKey ek;
@@ -306,6 +311,11 @@ LWECiphertext BinFHEScheme::EvalFunc(const std::shared_ptr<BinFHECryptoParams>& 
 // Evaluate Homomorphic Flooring
 LWECiphertext BinFHEScheme::EvalFloor(const std::shared_ptr<BinFHECryptoParams>& params, const RingGSWBTKey& EK,
                                       ConstLWECiphertext& ct, const NativeInteger& beta, uint32_t roundbits) const {
+    if (ct == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return nullptr;
+    }
     const auto& LWEParams = params->GetLWEParams();
     NativeInteger q{roundbits == 0 ? LWEParams->Getq() : beta * (1 << (roundbits + 1))};
     NativeInteger mod{ct->GetModulus()};
@@ -420,6 +430,11 @@ LWECiphertext BinFHEScheme::EvalSign(const std::shared_ptr<BinFHECryptoParams>& 
 std::vector<LWECiphertext> BinFHEScheme::EvalDecomp(const std::shared_ptr<BinFHECryptoParams>& params,
                                                     const std::map<uint32_t, RingGSWBTKey>& EKs, ConstLWECiphertext& ct,
                                                     const NativeInteger& beta) const {
+    if (ct == nullptr)
+    {     
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return std::vector<LWECiphertext>();
+    }
     auto mod         = ct->GetModulus();
     auto& LWEParams  = params->GetLWEParams();
     auto& RGSWParams = params->GetRingGSWParams();

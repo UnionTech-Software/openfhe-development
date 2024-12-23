@@ -181,6 +181,11 @@ LWECiphertext LWEEncryptionScheme::SwitchCTtoqn(const std::shared_ptr<LWECryptoP
 // m_result = Round(4/q * (b - a*s))
 void LWEEncryptionScheme::Decrypt(const std::shared_ptr<LWECryptoParams>& params, ConstLWEPrivateKey& sk,
                                   ConstLWECiphertext& ct, LWEPlaintext* result, LWEPlaintextModulus p) const {
+    if (sk == nullptr || ct == nullptr || result == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return;
+    }                                
     // TODO in the future we should add a check to make sure sk parameters match
     // the ct parameters
 
