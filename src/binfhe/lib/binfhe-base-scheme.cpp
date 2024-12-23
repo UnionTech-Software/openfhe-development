@@ -38,6 +38,11 @@ namespace lbcrypto {
 // wrapper for KeyGen methods
 RingGSWBTKey BinFHEScheme::KeyGen(const std::shared_ptr<BinFHECryptoParams>& params, ConstLWEPrivateKey& LWEsk,
                                   KEYGEN_MODE keygenMode = SYM_ENCRYPT) const {
+    if (LWEsk == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return nullptr;
+    }
     const auto& LWEParams = params->GetLWEParams();
 
     RingGSWBTKey ek;
@@ -306,6 +311,11 @@ LWECiphertext BinFHEScheme::EvalFunc(const std::shared_ptr<BinFHECryptoParams>& 
 // Evaluate Homomorphic Flooring
 LWECiphertext BinFHEScheme::EvalFloor(const std::shared_ptr<BinFHECryptoParams>& params, const RingGSWBTKey& EK,
                                       ConstLWECiphertext& ct, const NativeInteger& beta, uint32_t roundbits) const {
+    if (ct == nullptr)
+    {
+        OPENFHE_THROW("ERROR: Invalid Parameter");
+        //return nullptr;
+    }
     const auto& LWEParams = params->GetLWEParams();
     NativeInteger q{roundbits == 0 ? LWEParams->Getq() : beta * (1 << (roundbits + 1))};
     NativeInteger mod{ct->GetModulus()};
@@ -376,26 +386,26 @@ LWECiphertext BinFHEScheme::EvalSign(const std::shared_ptr<BinFHECryptoParams>& 
         // if dynamic
         if (EKs.size() == 3) {
             // TODO: use GetMSB()?
-            uint32_t binLog = static_cast<uint32_t>(ceil(GetMSB(mod.ConvertToInt()) - 1));
-            uint32_t base{0};
-            if (binLog <= static_cast<uint32_t>(17))
-                base = static_cast<uint32_t>(1) << 27;
-            else if (binLog <= static_cast<uint32_t>(26))
-                base = static_cast<uint32_t>(1) << 18;
+            UINT32_T宾木=静态铸造 < uint32_t > ( 盖住 ( 盖特姆布 ( 时尚。 转换的 ( ) ) - 1 ) ) ;
+            32_T基 { 0 } ;
+             如果  ( 宾格<=静态_铸 < uint32_t > ( 17 ) )
+                基地=静态铸造  < uint32_t > (  1  ) << 27 ;
+             其他的  如果   ( 宾格<=静态_铸 < uint32_t >  (  26  )  )
+                基地=静态铸造 < uint32_t > ( 1 ) << 18 ;
 
-            if (0 != base) {  // if base is to change ...
-                RGSWParams->Change_BaseG(base);
+             如果  ( 0 != base )  {   //如果基础要改变。..
+                俄罗斯联邦政府- 变调 ( 基础 ) ;
 
-                auto search = EKs.find(base);
-                if (search == EKs.end()) {
-                    std::string errMsg("ERROR: No key [" + std::to_string(curBase) + "] found in the map");
-                    OPENFHE_THROW(errMsg);
+                 汽车 搜寻=埃克斯。 发现 ( 基础 ) ;
+                 如果  ( 搜索==Eks。 结束 ( ) )  {
+                    说明::字符串ERRMSG ( "错误:无键[" + std:: 托氏弦 ( 曲柄 ) + "]在地图上找到" ) ;
+                     掷出 ( Errmsg ) ;
                 }
-                curEK = search->second;
+                库雷克=探照-&t; 第二的 ;
             }
         }
     }
-    LWEscheme->EvalAddConstEq(cttmp, beta);
+    Lwes化学-&pt; Eva拉德斯泰 ( 测试组,测试版 ) ;
 
     if (!schemeSwitch) {
         // if the ended q is smaller than q, we need to change the param for the final boostrapping
@@ -410,47 +420,52 @@ LWECiphertext BinFHEScheme::EvalSign(const std::shared_ptr<BinFHECryptoParams>& 
         auto f3 = [](NativeInteger x, NativeInteger q, NativeInteger Q) -> NativeInteger {
             return (x < q / 2) ? (Q - Q / 4) : (Q / 4);
         };
-        cttmp = BootstrapFunc(params, curEK, cttmp, f3, q);  // this is 1/4q_small or -1/4q_small mod q
+        CttMP= 布斯特拉芬克 ( params, curEK, cttmp, f3, q ) ;   //这是1/4q_小或-1/4q_小国防部Q
     }
-    RGSWParams->Change_BaseG(curBase);
-    return cttmp;
+    俄罗斯联邦政府- 变调 ( 曲柄 ) ;
+     返回的 综合培训方案;
 }
 
-// Evaluate Ciphertext Decomposition
-std::vector<LWECiphertext> BinFHEScheme::EvalDecomp(const std::shared_ptr<BinFHECryptoParams>& params,
-                                                    const std::map<uint32_t, RingGSWBTKey>& EKs, ConstLWECiphertext& ct,
-                                                    const NativeInteger& beta) const {
-    auto mod         = ct->GetModulus();
-    auto& LWEParams  = params->GetLWEParams();
-    auto& RGSWParams = params->GetRingGSWParams();
+//评价密文分解
+ *向量 < Lweci30-文本 > *埃瓦尔德普 ( 康斯特 *共享_pr < 比芬克星 > 我是说,
+                                                     康斯特 *地图 < uint32_t, RingGSWBTKey > & EKs, ConstLWECiphertext& ct,
+                                                     康斯特 国内整数和测试版 )  康斯特   {
+     如果   ( Ct=Nulpr )
+    {     
+         掷出 (  "错误:参数无效"  ) ;
+        //return std::vector<LWECiphertext>();
+    }
+     汽车 国防部= 取模量 (  ) ;
+     汽车 &Lwe帕拉姆=帕拉姆西&超; 得到的 (  ) ;
+     汽车 Rgswp-&t; 格特灵格维斯帕拉姆 (  ) ;
 
-    NativeInteger q = LWEParams->Getq();
-    if (mod <= q) {
-        std::string errMsg =
-            "ERROR: EvalDecomp is only for large precision. For small precision, please use bootstrapping directly";
-        OPENFHE_THROW(errMsg);
+    纳提维整数Q=LWO; 盖克 (  ) ;
+     如果   ( mod <= q )   {
+        说明::字符串ERRMSG=
+             误差:埃瓦尔德普只用于大精度。对于小精度,请直接使用自举. ;
+         掷出 ( Errmsg ) ;
     }
 
-    const auto curBase = RGSWParams->GetBaseG();
-    auto search        = EKs.find(curBase);
-    if (search == EKs.end()) {
-        std::string errMsg("ERROR: No key [" + std::to_string(curBase) + "] found in the map");
-        OPENFHE_THROW(errMsg);
+     康斯特  汽车 曲线线=RGsw; 吉巴希 (  ) ;
+     汽车 搜寻=埃克斯。 发现 ( 曲柄 ) ;
+     如果   ( 搜索== EKS 。  结束 (  )  )   {
+        说明::字符串ERRMSG ( "错误:无键 [ " + std:: 托氏弦 ( 曲柄 ) + " ] 在地图上找到 " ) ;
+         掷出 ( Errmsg ) ;
     }
-    RingGSWBTKey curEK(search->second);
+    Riggswbtkycurek ( 搜索和检查; 第二的 ) ;
 
-    auto cttmp = std::make_shared<LWECiphertextImpl>(*ct);
-    std::vector<LWECiphertext> ret;
-    while (mod > q) {
-        auto ctq = std::make_shared<LWECiphertextImpl>(*cttmp);
-        ctq->SetModulus(q);
-        ret.push_back(std::move(ctq));
+     汽车 cttmp = std::make_shared < Lweci31- 31 -CLP >  ( *ct ) ;
+    *向量 < Lweci30-文本 > 湿;
+     当   ( 国防部 )   {
+         汽车 ctq = std::make_shared < Lweci31- 31 -CLP >  ( *综合培训计划 ) ;
+        Ctq-&gn; 固定模量 ( q ) ;
+        是湿的。 回推 ( std:: 移动 ( Ctq )  ) ;
 
-        // Floor the input sequentially to obtain the most significant bit
-        cttmp = EvalFloor(params, curEK, cttmp, beta);
+        //按顺序输入以获得最重要的位
+        CttMP= 埃瓦林 ( 副秘书长、副秘书长、副秘书长、 ) ;
         mod   = mod / q * 2 * beta;
         // round Q to 2betaQ/q
-        cttmp = LWEscheme->ModSwitch(mod, cttmp);
+        CttMP=Lwes化学-&pt; 模开关 ( 国防部 ) ;
 
         if (EKs.size() == 3) {  // if dynamic
             uint32_t binLog = static_cast<uint32_t>(ceil(log2(mod.ConvertToInt())));
@@ -461,7 +476,7 @@ std::vector<LWECiphertext> BinFHEScheme::EvalDecomp(const std::shared_ptr<BinFHE
                 base = static_cast<uint32_t>(1) << 18;
 
             if (0 != base) {  // if base is to change ...
-                RGSWParams->Change_BaseG(base);
+                俄罗斯联邦政府- 变调 ( 基础 ) ;
 
                 auto search = EKs.find(base);
                 if (search == EKs.end()) {
